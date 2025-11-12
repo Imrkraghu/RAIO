@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { Camera } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-react-native";
 import * as FileSystem from "expo-file-system";
@@ -97,7 +96,7 @@ const CameraScreenPersistent = () => {
 
       console.log("[CameraScreenPersistent] Capturing buffered detections...");
       
-      // ✅ First capture detections from buffer
+      // ✅ Capture detections from buffer
       const captureData = await cameraRef.current.captureBuffered();
       
       let detections = [];
@@ -134,7 +133,7 @@ const CameraScreenPersistent = () => {
 
       console.log("[CameraScreenPersistent] Image saved to:", path);
 
-      // ✅ Build comprehensive metadata
+      // ✅ Metadata
       const metadata = {
         timestamp: Date.now(),
         timestampISO: new Date().toISOString(),
@@ -151,15 +150,8 @@ const CameraScreenPersistent = () => {
         },
       };
 
-      console.log("[CameraScreenPersistent] Metadata prepared:", {
-        totalDetections: metadata.totalDetections,
-        uniqueLabels: metadata.uniqueLabels,
-        counts: metadata.counts,
-      });
-
       console.log("[CameraScreenPersistent] Navigating to Preview with metadata");
       
-      // ✅ Navigate to Preview screen
       navigation.navigate("Preview", { 
         imageUri: path, 
         metadata: metadata 
@@ -167,13 +159,12 @@ const CameraScreenPersistent = () => {
       
     } catch (err) {
       console.error("[CameraScreenPersistent] Capture error:", err);
-      console.error(err.stack);
       Alert.alert("Error", "Failed to capture image: " + err.message);
     }
   };
 
   // ======================
-  // 🧠 RENDER
+  // RENDER
   // ======================
   if (hasPermission === null) {
     return (
@@ -220,27 +211,12 @@ const CameraScreenPersistent = () => {
         >
           <View style={styles.overlay}>
             <View style={styles.modelStatus}>
-              <Text style={styles.modelStatusText}>✅ YOLOv11 Ready • {labels.length} classes</Text>
+              <Text style={styles.modelStatusText}>✅ YOLOv5 Ready • {labels.length} classes</Text>
             </View>
 
-            <TouchableOpacity
-              style={styles.flipButton}
-              onPress={() => {
-                console.log("[CameraScreenPersistent] Flipping camera");
-                setCameraType((prev) =>
-                  prev === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            >
-              <MaterialCommunityIcons name="camera-flip" size={30} color="white" />
-              <Text style={styles.flipText}>Flip Camera</Text>
-            </TouchableOpacity>
-
-            {/* Capture Button */}
-            <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
-              <Text style={styles.captureText}>Capture</Text>
+            {/* Circular Shutter Button */}
+            <TouchableOpacity style={styles.captureOuter} onPress={handleCapture}>
+              <View style={styles.captureInner} />
             </TouchableOpacity>
           </View>
         </CameraView>
@@ -303,38 +279,26 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  flipButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    borderWidth: 2,
+  captureOuter: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderWidth: 5,
     borderColor: "#fff",
-    padding: 10,
-    marginBottom: 12,
-    borderRadius: 10,
-  },
-  flipText: {
-    color: "#fff",
-    fontSize: 16,
-    marginLeft: 8,
-    fontWeight: "600",
-  },
-  captureButton: {
-    backgroundColor: "#32b8c6",
-    padding: 16,
-    borderRadius: 50,
-    marginBottom: 40,
-    width: 120,
+    justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
+    marginBottom: 40,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    shadowColor: "#00bcd4",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 10,
   },
-  captureText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "700",
+  captureInner: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: "#32b8c6",
   },
 });
