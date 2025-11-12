@@ -45,15 +45,12 @@
     "tailwindcss": "^3.1.8"
   },
   "author": {
-    "name": "Wahyu Setianto",
-    "url": "https://github.com/Hyuto"
+    "name": "Rohit Kumar",
+    "url": "https://github.com/imrkraghu"
   },
-  "license": "MIT",
+  "license": "imrkraghu",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hyuto/yolov5-tfjs-react-native.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Hyuto/yolov5-tfjs-react-native/issues"
+    "url": "git+https://github.com/imrkraghu/RAIO.git"
   }
 }
